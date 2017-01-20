@@ -5,8 +5,19 @@ socket.on('connect' , function () {
 
 socket.on('newMessage', function(message) {
     console.log('New Message Received' , message);
+    $('#messages').append(`<li>${message.from} : ${message.text}</li>`);
 });
 
 socket.on('disconnect', function() {
     console.log('Disconnected from Server');
+});
+
+$('#message-form').on('submit', function(e) {
+    e.preventDefault();
+    socket.emit('createMessage', {
+        from : 'User',
+        text : $('[name = messageText]').val()
+    }, function() {
+
+    });
 });
