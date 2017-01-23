@@ -5,7 +5,8 @@ socket.on('connect' , function () {
 
 socket.on('newMessage', function(message) {
     console.log('New Message Received' , message);
-    $('#messages').append(`<li>${message.from} : ${message.text}</li>`);
+    var formattedTime = moment(message.createdAt).format('h:mm:a');
+    $('#messages').append(`<li>${message.from} ${formattedTime} : ${message.text}</li>`);
 });
 
 socket.on('disconnect', function() {
@@ -44,5 +45,6 @@ locationButton.on('click', function() {
 });
 
 socket.on('newLocationMessage', function(message) {
-    $('#messages').append(`<li>${message.from} : <a target = "_blank" href="${message.url}">My Current Location</a></li>`);
+    var formattedTime = moment(message.createdAt).format('h:mm:a');
+    $('#messages').append(`<li>${message.from} ${formattedTime} : <a target = "_blank" href="${message.url}">My Current Location</a></li>`);
 });
