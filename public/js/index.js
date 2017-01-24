@@ -4,9 +4,14 @@ socket.on('connect' , function () {
 });
 
 socket.on('newMessage', function(message) {
-    console.log('New Message Received' , message);
     var formattedTime = moment(message.createdAt).format('h:mm:a');
-    $('#messages').append(`<li>${message.from} ${formattedTime} : ${message.text}</li>`);
+    var template = $('#messageTemplate').html();
+    var text = Mustache.render(template, {
+        from : message.from,
+        createdAt : formattedTime,
+        body : message.text
+    });
+    $('#messages').append(text);
 });
 
 socket.on('disconnect', function() {
@@ -46,5 +51,13 @@ locationButton.on('click', function() {
 
 socket.on('newLocationMessage', function(message) {
     var formattedTime = moment(message.createdAt).format('h:mm:a');
-    $('#messages').append(`<li>${message.from} ${formattedTime} : <a target = "_blank" href="${message.url}">My Current Location</a></li>`);
+    // $('#messages').append(`<li>${message.from} ${formattedTime} : <a target = "_blank" href="${message.url}">My Current Location</a></li>`);
+
+    var template = $('#locationMessageTemplate').html();
+    var text = Mustache.render(template, {
+        from : message.from,
+        createdAt : formattedTime,
+        url : message.url
+    });
+    $('#messages').append(text);
 });
