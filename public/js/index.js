@@ -1,4 +1,22 @@
 var socket = io();
+
+function scrollToBottom () {
+    // Selectors
+    var messages = $('#messages');
+    var newMessage = $('#messages').children('li:last-child');
+
+    //Heights
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+};
+
 socket.on('connect' , function () {
     console.log('Connected to server');
 });
@@ -12,6 +30,7 @@ socket.on('newMessage', function(message) {
         body : message.text
     });
     $('#messages').append(text);
+    scrollToBottom();
 });
 
 socket.on('disconnect', function() {
@@ -51,8 +70,6 @@ locationButton.on('click', function() {
 
 socket.on('newLocationMessage', function(message) {
     var formattedTime = moment(message.createdAt).format('h:mm:a');
-    // $('#messages').append(`<li>${message.from} ${formattedTime} : <a target = "_blank" href="${message.url}">My Current Location</a></li>`);
-
     var template = $('#locationMessageTemplate').html();
     var text = Mustache.render(template, {
         from : message.from,
@@ -60,4 +77,5 @@ socket.on('newLocationMessage', function(message) {
         url : message.url
     });
     $('#messages').append(text);
+    scrollToBottom();
 });
